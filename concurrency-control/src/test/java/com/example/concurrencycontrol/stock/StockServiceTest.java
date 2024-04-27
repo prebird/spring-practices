@@ -2,6 +2,8 @@ package com.example.concurrencycontrol.stock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.example.concurrencycontrol.IntegrationTest;
+import com.example.concurrencycontrol.stock.repository.StockMapper;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,17 +13,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class StockServiceTest {
+class StockServiceTest extends IntegrationTest {
 
   @Autowired
   private StockService stockService;
   @Autowired
   private StockRepository stockRepository;
+  @Autowired
+  private StockMapper stockMapper;
+
+  private Stock stock1;
 
   @BeforeEach
   public void before() {
-    stockRepository.saveAndFlush(new Stock(1L, 100L));
+    stock1 = stockRepository.saveAndFlush(new Stock(1L, 100L));
   }
 
   @AfterEach
@@ -31,9 +36,9 @@ class StockServiceTest {
 
   @Test
   void 재고_감소() {
-    stockService.decrease(1L, 1L);
+    stockService.decrease(stock1.getId(), 1L);
 
-    Stock stock = stockRepository.findById(1L).orElseThrow();
+    Stock stock = stockRepository.findById(stock1.getId()).orElseThrow();
     assertThat(stock.getQuantity()).isEqualTo(99L);
   }
 
@@ -46,7 +51,7 @@ class StockServiceTest {
     for (int i = 0; i < threadCount; i++) {
       executorService.submit(() -> {
         try {
-          stockService.decrease(1L, 1L);
+          stockService.decrease(stock1.getId(), 1L);
         } finally {
           latch.countDown();
         }
@@ -54,7 +59,45 @@ class StockServiceTest {
     }
     latch.await();
 
-    Stock stock = stockRepository.findById(1L).orElseThrow();
+    Stock stock = stockRepository.findById(stock1.getId()).orElseThrow();
+
+    // 100 - (1 * 100)
+    assertThat(stock.getQuantity()).isEqualTo(0);
+  }
+
+  @Test
+  void mybatis를_이용한_조회_테스트() {
+    Stock stock = stockMapper.findById(stock1.getId());
+
+    assertThat(stock.getId()).isEqualTo(stock1.getId());
+  }
+
+  @Test
+  void mybatis를_이용한_재고감소() {
+    stockService.decreaseWithMybais(stock1.getId(), 1L);
+
+    Stock stock = stockRepository.findById(stock1.getId()).orElseThrow();
+    assertThat(stock.getQuantity()).isEqualTo(99L);
+  }
+
+  @Test
+  void mybatis를_이용한_재고감소_동시에_100개() throws InterruptedException {
+    int threadCount = 100;
+    ExecutorService executorService = Executors.newFixedThreadPool(32);
+    CountDownLatch latch = new CountDownLatch(threadCount);
+
+    for (int i = 0; i < threadCount; i++) {
+      executorService.submit(() -> {
+        try {
+          stockService.decreaseWithMybais(stock1.getId(), 1L);
+        } finally {
+          latch.countDown();
+        }
+      });
+    }
+    latch.await();
+
+    Stock stock = stockRepository.findById(stock1.getId()).orElseThrow();
 
     // 100 - (1 * 100)
     assertThat(stock.getQuantity()).isEqualTo(0);
