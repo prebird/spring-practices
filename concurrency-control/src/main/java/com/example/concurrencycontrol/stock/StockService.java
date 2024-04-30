@@ -22,7 +22,7 @@ public class StockService {
 
   @Transactional
   public void decreaseWithMybais(Long id, Long quantity) {
-    Stock stock = stockMapper.findByIdWithPessimisticLock(id);
+    Stock stock = stockMapper.findById(id);
     if (stock == null) {
       throw new IllegalArgumentException("stock id 가 존재하지 않습니다.");
     }

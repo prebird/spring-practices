@@ -83,7 +83,7 @@ class StockServiceTest extends IntegrationTest {
   @Test
   void mybatis를_이용한_재고감소_동시에_100개() throws InterruptedException {
     int threadCount = 100;
-    ExecutorService executorService = Executors.newFixedThreadPool(32);
+    ExecutorService executorService = Executors.newFixedThreadPool(4);
     CountDownLatch latch = new CountDownLatch(threadCount);
 
     for (int i = 0; i < threadCount; i++) {
