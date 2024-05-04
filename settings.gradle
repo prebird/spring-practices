@@ -1,3 +1,4 @@
 rootProject.name = 'spring-practices'
 include 'concurrency-control'
 include 'simple-payment-app'
+include 'kubernetes-practice'
