@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  kubernetes-practice:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gyureal/kubernetes-practice:local-mysql
+    container_name: kubernetes-practice
+    ports:
+      - "8080:8080"
