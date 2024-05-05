@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3336/kyumall
+    url: jdbc:mysql://host.minikube.internal:3336/kyumall
     username: root
     password: 12
   jpa:
