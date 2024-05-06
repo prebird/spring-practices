@@ -4,6 +4,10 @@ spring:
     url: jdbc:mysql://localhost:3316/batch
     username: root
     password: 12
+
+  batch:
+    job:
+      name: simpleJob
 #  jpa:
 #    hibernate:
 #      ddl-auto: create
