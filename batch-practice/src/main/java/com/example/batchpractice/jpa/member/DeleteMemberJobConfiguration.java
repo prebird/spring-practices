@@ -3,6 +3,7 @@ package com.example.batchpractice.jpa.member;
 import com.example.batchpractice.jpa.member.entity.Member;
 import com.example.batchpractice.jpa.member.entity.MemberRepository;
 import jakarta.persistence.EntityManagerFactory;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort.Direction;
@@ -33,14 +35,17 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
+@ConditionalOnProperty(name = "spring.batch.job.name", havingValue = DeleteMemberJobConfiguration.JOB_NAME)
 public class DeleteMemberJobConfiguration {
   private final EntityManagerFactory entityManagerFactory;
   private final MemberRepository memberRepository;
-  private static final int CHUNK_SIZE = 100;
+  public static final String JOB_NAME = "deleteLeaveMemberJob";
+  private static final int CHUNK_SIZE = 1;
+  private final Clock clock;
 
   @Bean
   public Job deleteLeaveMemberJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-    return new JobBuilder("deleteLeaveMemberJob", jobRepository)
+    return new JobBuilder(JOB_NAME, jobRepository)
         .start(deleteMemberStep(jobRepository, transactionManager))
         .build();
   }
@@ -62,8 +67,9 @@ public class DeleteMemberJobConfiguration {
     return new RepositoryItemReaderBuilder<Member>()
         .name("leaveMemberReader")
         .repository(memberRepository)
+        .pageSize(CHUNK_SIZE)
         .methodName("findAllLeaveMemberToDelete")
-        .arguments(LocalDateTime.now().minusYears(5))
+        .arguments(LocalDateTime.now(clock).minusYears(5))
         .sorts(Collections.singletonMap("id", Direction.ASC))
         .build();
   }

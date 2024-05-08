@@ -13,4 +13,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
       + " and m.isDeleted = 'N' "
       + " and m.leaveAt <= :fiveYearAgoFromNow")
   Page<Member> findAllLeaveMemberToDelete(LocalDateTime fiveYearAgoFromNow ,Pageable pageable);
+
+  int countByIsDeleted(DeletedYn deletedYn);
 }
