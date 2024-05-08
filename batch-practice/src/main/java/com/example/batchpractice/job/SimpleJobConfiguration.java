@@ -1,5 +1,8 @@
 package com.example.batchpractice.job;
 
+import static com.example.batchpractice.job.SimpleJobConfiguration.JOB_NAME;
+
+import com.example.batchpractice.jpa.member.DeleteMemberJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -10,6 +13,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -17,10 +21,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
+@ConditionalOnProperty(name = "spring.batch.job.name", havingValue = JOB_NAME)
 public class SimpleJobConfiguration {
+  public static final String JOB_NAME = "simpleJob";
   @Bean
   public Job simpleJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-    return new JobBuilder("simpleJob", jobRepository)
+    return new JobBuilder(JOB_NAME, jobRepository)
         .start(simpleStep1(jobRepository, transactionManager, null))
         .next(simpleStep2(jobRepository, transactionManager, null))
         .build();

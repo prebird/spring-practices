@@ -9,16 +9,19 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Slf4j
 @Configuration
+@ConditionalOnProperty(name = "spring.batch.job.name", havingValue = StepNextConditionalJobConfiguration.JOB_NAME)
 public class StepNextConditionalJobConfiguration {
+  public static final String JOB_NAME = "stepNextConditionalJob";
   @Bean(name = "stepNextConditionalJob")
   public Job stepNextConditionalJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-    return new JobBuilder("stepNextConditionalJob", jobRepository)
+    return new JobBuilder(JOB_NAME, jobRepository)
         .start(conditionStep1(jobRepository, transactionManager))
           .on("FAILED") // 작업 1 실패시
           .to(conditionStep3(jobRepository, transactionManager)) // 작업 3을 실행한다.
