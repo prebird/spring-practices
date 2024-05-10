@@ -19,7 +19,9 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
+import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,7 +57,7 @@ public class DeleteMemberJobConfiguration {
   public Step deleteMemberStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
     return new StepBuilder("deleteMemberStep", jobRepository)
         .<Member, Member>chunk(CHUNK_SIZE, transactionManager)
-        .reader(leaveMemberReader())
+        .reader(leaveMemberJpaPagingReader())
         .processor(setDeleteFlag())
         .writer(saveMemberWriter())
         .build();
@@ -63,15 +65,39 @@ public class DeleteMemberJobConfiguration {
 
   @Bean
   @StepScope
-  public RepositoryItemReader<Member> leaveMemberReader() {
+  public RepositoryItemReader<Member> leaveMemberRepositoryReader() {
     return new RepositoryItemReaderBuilder<Member>()
-        .name("leaveMemberReader")
+        .name("leaveMemberRepositoryReader")
         .repository(memberRepository)
         .pageSize(CHUNK_SIZE)
         .methodName("findAllLeaveMemberToDelete")
         .arguments(LocalDateTime.now(clock).minusYears(5))
         .sorts(Collections.singletonMap("id", Direction.ASC))
         .build();
+  }
+
+  @Bean
+  @StepScope
+  public JpaPagingItemReader<Member> leaveMemberJpaPagingReader() {
+    JpaPagingItemReader<Member> jpaPagingItemReader = new JpaPagingItemReader<>() {
+      @Override
+      public int getPage() {
+        return 0;
+      }
+    };
+
+    jpaPagingItemReader.setName("leaveMemberJpaPagingReader");
+    jpaPagingItemReader.setQueryString(
+        " select m "
+        + " from Member m "
+        + " where m.memberStatus = 'LEAVE' "
+        + " and m.isDeleted = 'N' "
+        + " and m.leaveAt <= :fiveYearAgoFromNow");
+    jpaPagingItemReader.setParameterValues(Collections.singletonMap("fiveYearAgoFromNow", LocalDateTime.now(clock).minusYears(5)));
+    jpaPagingItemReader.setPageSize(CHUNK_SIZE);
+    jpaPagingItemReader.setEntityManagerFactory(entityManagerFactory);
+
+    return jpaPagingItemReader;
   }
 
   @Bean
