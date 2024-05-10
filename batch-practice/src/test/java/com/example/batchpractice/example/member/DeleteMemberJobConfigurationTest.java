@@ -1,13 +1,13 @@
-package com.example.batchpractice.jpa.member;
+package com.example.batchpractice.example.member;
 
 import static org.assertj.core.api.Assertions.*;
 
 import com.example.batchpractice.TestBatchConfig;
 import com.example.batchpractice.TestUtils;
-import com.example.batchpractice.jpa.member.entity.DeletedYn;
-import com.example.batchpractice.jpa.member.entity.Member;
-import com.example.batchpractice.jpa.member.entity.MemberRepository;
-import com.example.batchpractice.jpa.member.entity.MemberStatus;
+import com.example.batchpractice.example.member.entity.DeletedYn;
+import com.example.batchpractice.example.member.entity.Member;
+import com.example.batchpractice.example.member.entity.MemberRepository;
+import com.example.batchpractice.example.member.entity.MemberStatus;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

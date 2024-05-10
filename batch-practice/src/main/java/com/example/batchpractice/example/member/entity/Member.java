@@ -1,4 +1,4 @@
-package com.example.batchpractice.jpa.member.entity;
+package com.example.batchpractice.example.member.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

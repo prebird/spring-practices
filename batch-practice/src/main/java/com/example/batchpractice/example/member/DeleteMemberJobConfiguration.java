@@ -1,7 +1,7 @@
-package com.example.batchpractice.jpa.member;
+package com.example.batchpractice.example.member;
 
-import com.example.batchpractice.jpa.member.entity.Member;
-import com.example.batchpractice.jpa.member.entity.MemberRepository;
+import com.example.batchpractice.example.member.entity.Member;
+import com.example.batchpractice.example.member.entity.MemberRepository;
 import jakarta.persistence.EntityManagerFactory;
 import java.time.Clock;
 import java.time.LocalDateTime;

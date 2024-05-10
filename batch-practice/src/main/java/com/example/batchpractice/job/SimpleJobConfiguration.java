@@ -2,7 +2,6 @@ package com.example.batchpractice.job;
 
 import static com.example.batchpractice.job.SimpleJobConfiguration.JOB_NAME;
 
-import com.example.batchpractice.jpa.member.DeleteMemberJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

@@ -1,4 +1,4 @@
-package com.example.batchpractice.jpa.member.entity;
+package com.example.batchpractice.example.member.entity;
 
 import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
