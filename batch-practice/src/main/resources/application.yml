@@ -1,6 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    # url: jdbc:mysql://host.docker.internal:3316/batch
     url: jdbc:mysql://localhost:3316/batch
     username: root
     password: 12

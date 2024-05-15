@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    volumes:
+      - /Users/yonggyujeong/myFolder/programing/jenkins:/var/jenkins_home # 로컬 디렉토리와 컨테이너의 디렉토리를 연결
+    ports:
+      - "8070:8080"
