@@ -17,6 +17,8 @@ spec:
           envFrom:
           - configMapRef:
               name: kubernetes-practice-config
+          - secretRef:
+              name: db-password   # Secret 대체
           image: gyureal/kubernetes-practice:local-mysql
           ports:
             - containerPort: 8080

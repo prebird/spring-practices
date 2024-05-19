@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://host.minikube.internal:3336/kube
     username: root
-    password: 12
+    password: secret #12
   jpa:
     hibernate:
       ddl-auto: create
