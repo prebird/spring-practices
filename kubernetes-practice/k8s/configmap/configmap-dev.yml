@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubernetes-practice-config
+data:
+  SPRING_PROFILES_ACTIVE: dev
+  APP_DEPLOYER_NAME: jyg

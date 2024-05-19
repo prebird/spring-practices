@@ -14,11 +14,9 @@ spec:
     spec:
       containers:
         - name: kubernetes-practice
-          env:
-          - name: SPRING_PROFILES_ACTIVE
-            value: local
-          - name: APP_DEPLOYER_NAME
-            value: jyg
+          envFrom:
+          - configMapRef:
+              name: kubernetes-practice-config
           image: gyureal/kubernetes-practice:local-mysql
           ports:
             - containerPort: 8080
