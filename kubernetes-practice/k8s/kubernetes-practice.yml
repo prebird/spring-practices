@@ -14,9 +14,9 @@ spec:
     spec:
       containers:
         - name: kubernetes-practice
-          env:
-            - name: APP_DEPLOYER_NAME   # yaml의 . 을 _ 로 치환해야함
-              value: jyg(setting from k8s yaml)
+          envFrom:
+            - configMapRef:
+                name: app-configmap
           image: gyureal/kubernetes-practice:local-mysql
           ports:
             - containerPort: 8080
