@@ -6,6 +6,10 @@ management:
       enabled: true
     env:
       enabled: true
+  server:
+    port: 8181
+    # actuator 엔드포인트 (보안을 위해 변경, 만약 8080 이외에는 외부에 노출되어 있지 않다면, 포트를 바꾸는 것도 하나의 방법입다. )
+    # 만약 어쩔수 없이 인터넷망에 노출된다면, 스프링 시큐리티, 필터 등으로 인가된 사용자만 접근 가능하도록 추가적인 개발이 필요하다.
   endpoint:
     shutdown:
       enabled: true # shutdown 활성화
