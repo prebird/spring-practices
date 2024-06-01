@@ -2,6 +2,9 @@ management:
   endpoint:
     shutdown:
       enabled: true # shutdown 활성화
+    health:
+#      show-details: always
+      show-components: always # up 인지만 확인
   endpoints:
     web:
       exposure:
