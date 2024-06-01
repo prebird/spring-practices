@@ -1,4 +1,11 @@
 management:
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+    env:
+      enabled: true
   endpoint:
     shutdown:
       enabled: true # shutdown 활성화
@@ -10,6 +17,6 @@ management:
       exposure:
         include: "*" # 전체 노출
 
-
-# actuator 기능은 활성화, 노출 두가지가 다 되어있어야 사용할 수 있다.
-
+info:
+  app:
+    name: actuator-practice
