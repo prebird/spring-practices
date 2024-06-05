@@ -1,13 +1,14 @@
 package com.example.cachepractice.food.dto;
 
 import com.example.cachepractice.food.domain.Food;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @AllArgsConstructor @Builder
 @Getter
-public class FoodDto {
+public class FoodDto implements Serializable {
   private Long id;
   private String name;
   private Integer price;

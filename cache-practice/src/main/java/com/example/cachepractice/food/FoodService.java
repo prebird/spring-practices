@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class FoodService {
   private final FoodRepository foodRepository;
 
-  @Cacheable(value="allFood", key = "#root.methodName")
+  @Cacheable(value="allFoods", key = "#root.methodName")
   public List<FoodDto> getAllFood() {
     log.info("not cached");
     return foodRepository.findAll().stream()
