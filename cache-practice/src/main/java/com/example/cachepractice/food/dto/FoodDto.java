@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @AllArgsConstructor @Builder
 @Getter
-public class FoodDto implements Serializable {
+public class FoodDto {
   private Long id;
   private String name;
   private Integer price;

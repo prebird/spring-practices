@@ -21,7 +21,7 @@ public class DataLoader implements CommandLineRunner {
     createFood("피자", 12000);
     createFood("자장면", 3000);
     createFood("양장피", 20000);
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 2; i++) {
       createFood("testfood" + i, 1000);
     }
     log.info("cacheManager : {}", cacheManager.getClass().getSimpleName());
