@@ -17,10 +17,6 @@ public class DataLoader implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    createFood("치킨", 10000);
-    createFood("피자", 12000);
-    createFood("자장면", 3000);
-    createFood("양장피", 20000);
     for (int i = 0; i < 2; i++) {
       createFood("testfood" + i, 1000);
     }
