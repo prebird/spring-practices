@@ -12,7 +12,7 @@ import org.springframework.cache.jcache.JCacheCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class EhcacheConfig {
   @Bean
   public CacheManager cacheManager() {

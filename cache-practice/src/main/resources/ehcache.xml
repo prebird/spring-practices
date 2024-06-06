@@ -4,9 +4,30 @@
   xsi:schemaLocation="
             http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd
             http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
-  <cache alias="allFoods">
-    <key-type>java.lang.String</key-type>
-    <value-type>java.util.List</value-type>
+
+  <cache-template name="allFoods-template">
+    <expiry>
+      <ttl unit="seconds">30</ttl>
+    </expiry>
+    <heap unit="entries">20</heap>
+  </cache-template>
+
+
+  <!-- 참조로 저장 -->
+  <cache-template name="byRefTemplate">
+    <key-type copier="org.ehcache.impl.copy.IdentityCopier">java.lang.String</key-type>
+    <value-type copier="org.ehcache.impl.copy.IdentityCopier">java.util.List</value-type>
+    <heap unit="entries">10</heap>
+  </cache-template>
+
+  <!-- 값으로 저장 - SerializingCopier 를 copier로 등록하면 객체에 Serializable 을 확장할 필요가 없다. -->
+  <cache-template name="byValueTemplate">
+    <key-type copier="org.ehcache.impl.copy.SerializingCopier">java.lang.String</key-type>
+    <value-type copier="org.ehcache.impl.copy.SerializingCopier">java.util.List</value-type>
+    <heap unit="entries">10</heap>
+  </cache-template>
+
+  <cache alias="allFoods" uses-template="byValueTemplate">
     <expiry>
       <ttl unit="seconds">30</ttl>
     </expiry>
