@@ -1,5 +1,6 @@
 package com.example.cachepractice.food.cache;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.concurrent.TimeUnit;
 import org.springframework.cache.CacheManager;
@@ -15,8 +16,16 @@ public class CaffeineCacheConfig {
 
     // default 설정 등록
     Caffeine<Object, Object> caffeine = Caffeine.newBuilder().recordStats()
-        .expireAfterWrite(60, TimeUnit.SECONDS);
+        .expireAfterWrite(1, TimeUnit.SECONDS);
     cacheManager.setCaffeine(caffeine);
+
+    // custom 설정 등록
+    cacheManager.registerCustomCache("allFoods",
+        Caffeine.newBuilder()
+        .recordStats()
+        .expireAfterWrite(60, TimeUnit.SECONDS)
+        .maximumSize(100)
+        .build());
 
     return cacheManager;
   }
