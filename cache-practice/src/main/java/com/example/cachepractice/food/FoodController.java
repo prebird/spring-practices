@@ -20,4 +20,9 @@ public class FoodController {
     log.info("getAllFoodList api called");
     return foodService.getAllFood();
   }
+
+  @GetMapping("/evict")
+  public void evictAllFoods() {
+    foodService.evictAllFoods();
+  }
 }

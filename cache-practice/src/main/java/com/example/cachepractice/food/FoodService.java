@@ -5,6 +5,7 @@ import com.example.cachepractice.food.dto.FoodDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +20,10 @@ public class FoodService {
     log.info("not cached");
     return foodRepository.findAll().stream()
         .map(FoodDto::from).toList();
+  }
+
+  @CacheEvict(value = "allFoods", allEntries = true)
+  public void evictAllFoods() {
+
   }
 }
