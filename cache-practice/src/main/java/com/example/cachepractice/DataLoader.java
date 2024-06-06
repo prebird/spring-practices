@@ -17,7 +17,7 @@ public class DataLoader implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 10; i++) {
       createFood("testfood" + i, 1000);
     }
     log.info("cacheManager : {}", cacheManager.getClass().getSimpleName());
