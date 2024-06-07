@@ -1,6 +1,7 @@
 package com.example.cachepractice.food;
 
 import com.example.cachepractice.food.dto.FoodDto;
+import io.micrometer.core.annotation.Timed;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FoodController {
   private final FoodService foodService;
 
+  @Timed("cachepractice.cache.getAllFoodList")
   @GetMapping
   public List<FoodDto> getAllFoodList() {
     log.info("getAllFoodList api called");

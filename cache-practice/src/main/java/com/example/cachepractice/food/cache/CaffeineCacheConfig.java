@@ -30,20 +30,9 @@ public class CaffeineCacheConfig {
         .expireAfterWrite(1, TimeUnit.SECONDS);
     cacheManager.setCaffeine(caffeine);
 
-//     custom 설정 등록
+    // custom 설정 등록
     Arrays.stream(CaffeineCacheEnum.values()).forEach(
         cacheEnum -> cacheManager.registerCustomCache(cacheEnum.getName(), cacheEnum.getCache()));
-
-    ;
-    // 카페인 캐시 추가 메트릭 설정
-    cacheManager.registerCustomCache("allFoods", Caffeine.newBuilder()
-        .recordStats(() -> new CaffeineStatsCounter(meterRegistry, "allFoods")) // 카페인 캐시 추가 메트릭 설정
-        .expireAfterWrite(60, TimeUnit.SECONDS)
-        .evictionListener((Object key, Object value,
-            RemovalCause cause) ->
-            log.info(String.format(
-                "Key %s was evicted (%s)%n", key, cause)))
-        .build());
 
     return cacheManager;
   }

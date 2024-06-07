@@ -2,6 +2,7 @@ package com.example.cachepractice.food;
 
 import com.example.cachepractice.food.domain.FoodRepository;
 import com.example.cachepractice.food.dto.FoodDto;
+import io.micrometer.core.annotation.Timed;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
