@@ -5,7 +5,9 @@ import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
@@ -27,11 +29,45 @@ public class CacheConfig {
   public MeterBinder allFoodsCacheSize(CacheManager cacheManager) {
     return registry -> Gauge.builder("cachepractice.cache.allFoods.size", cacheManager, manager -> {
       List<FoodDto> foodDtos = extractValueFromCacheManager(manager);
-      if (foodDtos == null) {
+      return getSize(foodDtos);
+    }).register(registry);
+  }
+
+  private static int getSize(List<FoodDto> foodDtos) {
+    if (foodDtos == null) {
+      return 0;
+    }
+    return foodDtos.size();
+  }
+
+  @Bean
+  public MeterBinder allFoodsCacheWeight(CacheManager cacheManager) {
+    return registry -> Gauge.builder("cachepractice.cache.allFoods.weight", cacheManager, manager -> {
+      List<FoodDto> foodDtos = extractValueFromCacheManager(manager);
+      int size = getSize(foodDtos);
+      if (size == 0) {
         return 0;
       }
-      return foodDtos.size();
+      return estimateWeight(foodDtos);
     }).register(registry);
+  }
+
+  public long estimateWeight(List<FoodDto> foodDtos) {
+    return foodDtos.size() * calculateObjectSize(foodDtos.get(0));
+  }
+
+  public static long calculateObjectSize(Object obj) {
+    try {
+      try (ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream()) {
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream)) {
+          objectOutputStream.writeObject(obj);
+          objectOutputStream.flush();
+          return byteOutputStream.size();
+        }
+      }
+    } catch (IOException e) {
+      return 0;
+    }
   }
 
   private List<FoodDto> extractValueFromCacheManager(CacheManager manager) {
