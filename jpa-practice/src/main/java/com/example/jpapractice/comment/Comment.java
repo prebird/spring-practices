@@ -31,6 +31,10 @@ public class Comment {
   @OneToMany(mappedBy = "parentComment")
   private List<Comment> subComments = new ArrayList<>();
 
+  @Builder.Default
+  @OneToMany(mappedBy = "comment")
+  private List<CommentLike> commentLikes = new ArrayList<>();
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
