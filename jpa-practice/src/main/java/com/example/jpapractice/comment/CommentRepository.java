@@ -21,4 +21,17 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
    where c.parentComment = :parentComment
 """)
   List<CommentWithCountDto> findWithSubCountByParentComment(Comment parentComment);
+
+  @Query("""
+    select new com.example.jpapractice.comment.dto.CommentWithLikeCountDto(
+      c.id,
+      c.content,
+      (select count(cl) as count from CommentLike cl where cl.comment.id = c.id and cl.likeType = com.example.jpapractice.comment.LikeType.LIKE),
+      (select count(cl) as count from CommentLike cl where cl.comment.id = c.id and cl.likeType = com.example.jpapractice.comment.LikeType.DISLIKE)
+    )
+    from Comment c
+    where c.parentComment = :parentComment
+    order by c.id
+  """)
+  List<CommentWithLikeCountDto> findWithLikeCountByParentComment(Comment parentComment);
 }

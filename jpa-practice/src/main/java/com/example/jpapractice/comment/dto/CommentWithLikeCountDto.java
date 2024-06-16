@@ -1,4 +1,4 @@
-package com.example.jpapractice.comment;
+package com.example.jpapractice.comment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,12 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 댓글 내용과 대댓글의 갯수를 같이 조회
+ * 댓글의 좋아요갯수와 싫어요 갯수와 함께 조회
  */
-@NoArgsConstructor
 @Getter @AllArgsConstructor @Builder
-public class CommentWithCountDto {
+public class CommentWithLikeCountDto {
   private Long id;
   private String content;
-  private Long subCommentCount;
+  private Long likeCount;
+  private Long dislikeCount;
 }
