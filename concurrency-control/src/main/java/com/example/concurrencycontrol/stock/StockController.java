@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class StockController {
-  private final StockService stockService;
+  private final StockPessimisticService stockPessimisticService;
   @GetMapping("/stock/{id}")
   public void decreaseStock(@PathVariable Long id, @RequestParam Long quantity) {
-    stockService.decrease(id, quantity);
+    stockPessimisticService.decreaseWithJpa(id, quantity);
   }
 }

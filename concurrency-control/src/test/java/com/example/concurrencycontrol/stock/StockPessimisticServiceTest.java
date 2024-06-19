@@ -11,12 +11,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-class StockServiceTest extends IntegrationTest {
+class StockPessimisticServiceTest extends IntegrationTest {
 
   @Autowired
-  private StockService stockService;
+  private StockPessimisticService stockPessimisticService;
   @Autowired
   private StockRepository stockRepository;
   @Autowired
@@ -36,7 +35,7 @@ class StockServiceTest extends IntegrationTest {
 
   @Test
   void 재고_감소() {
-    stockService.decrease(stock1.getId(), 1L);
+    stockPessimisticService.decreaseWithJpa(stock1.getId(), 1L);
 
     Stock stock = stockRepository.findById(stock1.getId()).orElseThrow();
     assertThat(stock.getQuantity()).isEqualTo(99L);
@@ -51,7 +50,7 @@ class StockServiceTest extends IntegrationTest {
     for (int i = 0; i < threadCount; i++) {
       executorService.submit(() -> {
         try {
-          stockService.decrease(stock1.getId(), 1L);
+          stockPessimisticService.decreaseWithJpa(stock1.getId(), 1L);
         } finally {
           latch.countDown();
         }
@@ -74,7 +73,7 @@ class StockServiceTest extends IntegrationTest {
 
   @Test
   void mybatis를_이용한_재고감소() {
-    stockService.decreaseWithMybais(stock1.getId(), 1L);
+    stockPessimisticService.decreaseWithMybatis(stock1.getId(), 1L);
 
     Stock stock = stockRepository.findById(stock1.getId()).orElseThrow();
     assertThat(stock.getQuantity()).isEqualTo(99L);
@@ -89,7 +88,7 @@ class StockServiceTest extends IntegrationTest {
     for (int i = 0; i < threadCount; i++) {
       executorService.submit(() -> {
         try {
-          stockService.decreaseWithMybais(stock1.getId(), 1L);
+          stockPessimisticService.decreaseWithMybatis(stock1.getId(), 1L);
         } finally {
           latch.countDown();
         }
