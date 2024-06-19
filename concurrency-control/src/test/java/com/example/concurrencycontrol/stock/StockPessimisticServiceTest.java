@@ -17,6 +17,8 @@ class StockPessimisticServiceTest extends IntegrationTest {
   @Autowired
   private StockPessimisticService stockPessimisticService;
   @Autowired
+  private StockOptimisticFacade stockOptimisticFacade ;
+  @Autowired
   private StockRepository stockRepository;
   @Autowired
   private StockMapper stockMapper;
@@ -89,6 +91,31 @@ class StockPessimisticServiceTest extends IntegrationTest {
       executorService.submit(() -> {
         try {
           stockPessimisticService.decreaseWithMybatis(stock1.getId(), 1L);
+        } finally {
+          latch.countDown();
+        }
+      });
+    }
+    latch.await();
+
+    Stock stock = stockRepository.findById(stock1.getId()).orElseThrow();
+
+    // 100 - (1 * 100)
+    assertThat(stock.getQuantity()).isEqualTo(0);
+  }
+
+  @Test
+  void 재고_감소_동시에_100개_낙관적락() throws InterruptedException {
+    int threadCount = 100;
+    ExecutorService executorService = Executors.newFixedThreadPool(32);
+    CountDownLatch latch = new CountDownLatch(threadCount);
+
+    for (int i = 0; i < threadCount; i++) {
+      executorService.submit(() -> {
+        try {
+          stockOptimisticFacade.decreaseWithRetryWhenFail(stock1.getId(), 1L);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
         } finally {
           latch.countDown();
         }
