@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 public class SimpleTutorialConsumer {
 
   @RabbitListener(queues = "hello")
-  public void receive(String in) {
-    log.info("[SimpleTutorial] Receive: {}", in);
+  public void receive(BookDto bookDto) {
+    log.info("[SimpleTutorial] Receive: {}", bookDto);
   }
 }

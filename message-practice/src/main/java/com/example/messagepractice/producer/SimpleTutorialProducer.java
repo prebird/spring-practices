@@ -22,8 +22,8 @@ public class SimpleTutorialProducer {
 
   @GetMapping("/simpleTutorial")
   public void send() {
-    String message = "Hello World!";
-    this.rabbitTemplate.convertAndSend(hello.getName(), message);
-    log.info(" [simpleTutorial] Send: {}", message);
+    BookDto bookDto = new BookDto(1L, "레빗엠큐", 10000);
+    this.rabbitTemplate.convertAndSend(hello.getName(), bookDto);
+    log.info(" [simpleTutorial] Send: {}", bookDto);
   }
 }
