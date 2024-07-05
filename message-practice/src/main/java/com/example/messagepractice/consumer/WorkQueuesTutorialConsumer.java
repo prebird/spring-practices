@@ -20,6 +20,10 @@ public class WorkQueuesTutorialConsumer {
     log.info("[instance {}] >>> receiving, {}", instance, bookDto);
     log.info("[instance {}] sleep 3 seconds (book id {} processing...)", instance, bookDto.getId());
     Thread.sleep(3000);
+    if (instance == 1) {
+      log.error("book {} 처리중 에러 발생", bookDto.getId());
+      throw new RuntimeException("예외 발생!");
+    }
     log.info("instance {} [WorkQueuesTutorialConsumer] book id {} finished", instance, bookDto.getId());
   }
 }
