@@ -33,7 +33,7 @@ public class HelloWorld {
         /**
          * exchange 를 생성합니다.
          * exchange Type 은 아래와 같습니다.
-         * - direct: 특정 라우팅 키와 일치하는 메시지들을 전달합니다.
+         * - direct: 특정 라우팅 키와 일치하는 메시지들을 전달합니다.  V
          * - topic: 라우팅 키의 패턴과 일치하는 메시지들을 전달합니다.
          * - fanout: 라우팅 키를 무시하고 모든 바인딩된 큐에 메시지를 전달합니다.
          * - headers: 메시지 헤더 속성에 따라 메시지를 라우팅합니다.
@@ -52,9 +52,10 @@ public class HelloWorld {
 
         /**
          * 메세지를 Publish 합니다.
+         * direct exchange 이기 때문에 routing key와 정확히 일치하는 큐에 메세지를 전송합니다.
          */
         String message = "HELLO WORLD";
-        channel.basicPublish(EXCHANGE_NAME, QUEUE_NAME, null, message.getBytes());
+        channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, null, message.getBytes());
         System.out.println(">> Message Sent : " + message);
       }
     } catch (Exception e) {
