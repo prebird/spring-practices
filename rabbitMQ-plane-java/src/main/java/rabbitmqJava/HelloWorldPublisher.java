@@ -4,7 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class HelloWorld {
+public class HelloWorldPublisher {
   private static final String EXCHANGE_NAME = "hello-exchange";
   private static final String QUEUE_NAME = "hello-queue";
   private static final String ROUTING_KEY = "hello-routing_key";
