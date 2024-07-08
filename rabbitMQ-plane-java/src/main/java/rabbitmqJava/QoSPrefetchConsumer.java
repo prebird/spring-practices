@@ -5,11 +5,9 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
-import com.rabbitmq.client.GetResponse;
 
-public class HelloWorldConsumerConsume {
+public class QoSPrefetchConsumer {
   private static final String QUEUE_NAME = "hello-queue";
-  private static final String ROUTING_KEY = "hello-routing_key";
 
   public static void main(String[] args) {
     System.out.println("consumer started");
@@ -22,26 +20,34 @@ public class HelloWorldConsumerConsume {
       connectionFactory.setHost("localhost");
 
       /**
-       * Basic.Consume
-       * 비동기로 동작하기 때문에 성공, 실패 callback 을 등록해 주어야한다.
-       * 수신 확인 시, basic.ack 요청을 하는데, delivery tag 를 전송해주어 메세지를 특정하도록 해야한다.
-       * 수신 확인 처리 하지 않으면 Queue에는 unack 상태로 메세지가 남아있게 된다.
+       * QoS 를 통한 소비자 프리패치 제어
+       * QoS는 소비자가 소비할 수 있는 메세지 수를 제어하는 데 사용됩니다. (무거운 작업 같이 소비자에게 부담이 생기는 작업을 조절)
+       *
+       * prefetch size 를 1로 설정하고, autoAck 이 false 인 경우, 명시적으로 ACK 하지 않는 이상,
+       * 메세지는 한건만 처리되고 ACK을 호출할 때 까지 다음 메세지를 가져 오지 않습니다.
+       *
+       * prefetch size 를 설정하지 않는 경우, 무한대로 간주하여 ACK을 호출하지 않더라도
+       * 계속해서 메세지를 가져오게 됩니다.
        */
       try (Connection connection = connectionFactory.newConnection()) {
         Channel channel = connection.createChannel();
+        // 프리패치 사이즈 설정
+        int prefetchSize = 1;
+        channel.basicQos(prefetchSize);
+
         // 메세지 배달 성공시 콜백
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
           String message = new String(delivery.getBody(), "UTF-8");
           System.out.println("Received message: " + message);
           // 3초간 대기
           try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
           } catch (InterruptedException e) {
             throw new RuntimeException(e);
           }
           System.out.println("finished");
           // 수신확인 -> 하지 않으면 메시지는 도착하나, unack 상태로 큐에 남아있게된다.
-          channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+//          channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
         };
 
         // 취소 콜백 정의
@@ -64,5 +70,4 @@ public class HelloWorldConsumerConsume {
       System.out.println(e.getCause());
     }
   }
-
 }
