@@ -5,9 +5,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
-import com.rabbitmq.client.GetResponse;
 
-public class HelloWorldConsumerConsume {
+public class NoAckConsumer {
   private static final String QUEUE_NAME = "hello-queue";
   private static final String ROUTING_KEY = "hello-routing_key";
 
@@ -22,10 +21,9 @@ public class HelloWorldConsumerConsume {
       connectionFactory.setHost("localhost");
 
       /**
-       * Basic.Consume
-       * 비동기로 동작하기 때문에 성공, 실패 callback 을 등록해 주어야한다.
-       * 수신 확인 시, basic.ack 요청을 하는데, delivery tag 를 전송해주어 메세지를 특정하도록 해야한다.
-       * 수신 확인 처리 하지 않으면 Queue에는 unack 상태로 메세지가 남아있게 된다.
+       * No Ack Consumer
+       * 메세지 수신 후 Basic.Ack 응답을 하지 않아도 수신 처리를 한다.
+       * 일회용 메세지에 주로 사용된다.
        */
       try (Connection connection = connectionFactory.newConnection()) {
         Channel channel = connection.createChannel();
@@ -33,8 +31,6 @@ public class HelloWorldConsumerConsume {
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
           String message = new String(delivery.getBody(), "UTF-8");
           System.out.println("Received message: " + message);
-          // 수신확인 -> 하지 않으면 메시지는 도착하나, unack 상태로 큐에 남아있게된다.
-          channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
         };
 
         // 취소 콜백 정의
@@ -42,8 +38,8 @@ public class HelloWorldConsumerConsume {
           System.out.println("Consumer cancelled: " + consumerTag);
         };
 
-        // 기본 소비자 설정 (autoAck를 false로 설정하여 수동 확인 사용)
-        boolean autoAck = false;
+        // 기본 소비자 설정 (autoAck를 true로 no_ack 컨슈머 설정)
+        boolean autoAck = true;
         channel.basicConsume(QUEUE_NAME, autoAck, deliverCallback, cancelCallback);
 
         // 프로그램이 종료되지 않도록 무한 루프
@@ -57,5 +53,4 @@ public class HelloWorldConsumerConsume {
       System.out.println(e.getCause());
     }
   }
-
 }
