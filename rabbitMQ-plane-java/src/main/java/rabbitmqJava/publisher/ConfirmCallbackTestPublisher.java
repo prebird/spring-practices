@@ -1,4 +1,4 @@
-package rabbitmqJava;
+package rabbitmqJava.publisher;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConfirmCallback;

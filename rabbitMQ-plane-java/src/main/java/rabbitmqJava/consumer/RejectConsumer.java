@@ -1,4 +1,4 @@
-package rabbitmqJava;
+package rabbitmqJava.consumer;
 
 import com.rabbitmq.client.CancelCallback;
 import com.rabbitmq.client.Channel;
@@ -6,9 +6,8 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
-public class NoAckConsumer {
+public class RejectConsumer {
   private static final String QUEUE_NAME = "hello-queue";
-  private static final String ROUTING_KEY = "hello-routing_key";
 
   public static void main(String[] args) {
     System.out.println("consumer started");
@@ -21,9 +20,10 @@ public class NoAckConsumer {
       connectionFactory.setHost("localhost");
 
       /**
-       * No Ack Consumer
-       * 메세지 수신 후 Basic.Ack 응답을 하지 않아도 수신 처리를 한다.
-       * 일회용 메세지에 주로 사용된다.
+       * 메제시 거부하기: Basic.Reject, Basic.Nack
+       * reject - 하나의 메세지만 거부 가능 (AMQP 제공)
+       * nack - 여러 메세지를 거부 가능 (RabbitMQ 확장)
+       * requeue 를 true로 하면 메세지가 다시 큐로 들어간다. 아래 코드에서는 무한 루프를 돌게 된다.
        */
       try (Connection connection = connectionFactory.newConnection()) {
         Channel channel = connection.createChannel();
@@ -31,6 +31,11 @@ public class NoAckConsumer {
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
           String message = new String(delivery.getBody(), "UTF-8");
           System.out.println("Received message: " + message);
+
+          boolean requeue = true;
+//          channel.basicReject(delivery.getEnvelope().getDeliveryTag(), requeue);
+          boolean multiple = false; // 여러 메세지 처리 여부
+          channel.basicNack(delivery.getEnvelope().getDeliveryTag(), multiple, requeue);
         };
 
         // 취소 콜백 정의
@@ -38,8 +43,8 @@ public class NoAckConsumer {
           System.out.println("Consumer cancelled: " + consumerTag);
         };
 
-        // 기본 소비자 설정 (autoAck를 true로 no_ack 컨슈머 설정)
-        boolean autoAck = true;
+        // 기본 소비자 설정 (autoAck를 false로 설정하여 수동 확인 사용)
+        boolean autoAck = false;
         channel.basicConsume(QUEUE_NAME, autoAck, deliverCallback, cancelCallback);
 
         // 프로그램이 종료되지 않도록 무한 루프

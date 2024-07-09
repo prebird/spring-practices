@@ -1,4 +1,4 @@
-package rabbitmqJava;
+package rabbitmqJava.consumer;
 
 import com.rabbitmq.client.CancelCallback;
 import com.rabbitmq.client.Channel;
