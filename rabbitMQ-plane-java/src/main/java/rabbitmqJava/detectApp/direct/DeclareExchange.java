@@ -1,4 +1,4 @@
-package rabbitmqJava.detectApp;
+package rabbitmqJava.detectApp.direct;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;

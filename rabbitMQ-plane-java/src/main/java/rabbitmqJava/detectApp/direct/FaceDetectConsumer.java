@@ -1,4 +1,4 @@
-package rabbitmqJava.detectApp;
+package rabbitmqJava.detectApp.direct;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.CancelCallback;
@@ -8,6 +8,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import java.util.HashMap;
 import java.util.Map;
+import rabbitmqJava.detectApp.FaceDetectUtil;
 
 public class FaceDetectConsumer {
 
