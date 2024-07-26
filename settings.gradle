@@ -8,4 +8,5 @@ include 'cache-practice'
 include 'jpa-practice'
 include 'message-practice'
 include 'rabbitMQ-plane-java'
+include 'spring-cloud-stream-practice'
 
