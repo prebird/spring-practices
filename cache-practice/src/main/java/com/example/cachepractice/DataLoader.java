@@ -2,6 +2,8 @@ package com.example.cachepractice;
 
 import com.example.cachepractice.food.domain.Food;
 import com.example.cachepractice.food.domain.FoodRepository;
+import com.example.cachepractice.food.domain.FoodType;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -27,6 +29,8 @@ public class DataLoader implements CommandLineRunner {
     foodRepository.saveAndFlush(Food.builder()
             .name(name)
             .price(price)
+            .createdAt(LocalDateTime.now())
+            .foodType(FoodType.FRUIT)
         .build());
   }
 }

@@ -2,8 +2,8 @@ package com.example.cachepractice.food;
 
 import com.example.cachepractice.food.domain.FoodRepository;
 import com.example.cachepractice.food.dto.FoodDto;
-import io.micrometer.core.annotation.Timed;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -20,11 +20,16 @@ public class FoodService {
   public List<FoodDto> getAllFood() {
     log.info("not cached");
     return foodRepository.findAll().stream()
-        .map(FoodDto::from).toList();
+        .map(FoodDto::from).collect(Collectors.toList());
+  }
+
+  @Cacheable(value = "getFood", key = "#id")
+  public FoodDto getFood(Long id) {
+    return FoodDto.from(foodRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("찾을 수 없습니다.")));
   }
 
   @CacheEvict(value = "allFoods", allEntries = true)
   public void evictAllFoods() {
-
   }
 }

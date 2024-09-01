@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
 
 @RequiredArgsConstructor
 @Slf4j
-@Configuration
+//@Configuration
 public class CaffeineCacheConfig {
   private final MeterRegistry meterRegistry;
   @Bean
