@@ -1,6 +1,8 @@
 package com.example.cachepractice.food.cache;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -77,12 +79,16 @@ public class RedisCacheConfig {
    *   - [] 의 경우, 리스트, 배열 등 타입이 모호하여 역직렬화시 에러가 발생한다.
    * @return
    */
-  private ObjectMapper objectMapper() {
+  public ObjectMapper objectMapper() {
     ObjectMapper mapper = new ObjectMapper();
     PolymorphicTypeValidator ptv = mapper.getPolymorphicTypeValidator();
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    mapper.registerModule(new JavaTimeModule());
-    mapper.activateDefaultTyping(ptv, DefaultTyping.NON_FINAL);  // Class 타입을 명시하도록 함
-    return mapper;
+
+
+    return mapper
+        .setVisibility(PropertyAccessor.ALL, Visibility.NONE)
+        .setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
+        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        .registerModule(new JavaTimeModule())
+        .activateDefaultTyping(ptv, DefaultTyping.NON_FINAL);
   }
 }
