@@ -57,7 +57,7 @@ public class RedisCacheConfig {
   }
 
   @Bean
-  public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory, RedisTemplate redisTemplate) {
+  public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
     RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
         .disableCachingNullValues() // Null 값 캐시 안함
         .entryTtl(Duration.ZERO)  // TTL 설정 안함
@@ -82,7 +82,6 @@ public class RedisCacheConfig {
   public ObjectMapper objectMapper() {
     ObjectMapper mapper = new ObjectMapper();
     PolymorphicTypeValidator ptv = mapper.getPolymorphicTypeValidator();
-
 
     return mapper
         .setVisibility(PropertyAccessor.ALL, Visibility.NONE)
